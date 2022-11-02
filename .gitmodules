@@ -1,0 +1,3 @@
+[submodule "libdzf"]
+	path = libdzf
+	url = git@github.com:memnoth/libdzf.git
