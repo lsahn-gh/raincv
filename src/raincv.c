@@ -1,4 +1,4 @@
-/** main.c
+/** raincv.c
  *
  * Copyright 2022 Leesoo Ahn <lsahn@ooseel.net>
  *
@@ -26,6 +26,8 @@
 #include <sys/types.h>
 #include <sys/mount.h>
 
+#include "config.h"
+
 #include "rcv-utils.h"
 
 char opt_debug;
@@ -37,12 +39,13 @@ static void
 usage(void)
 {
   fprintf(stderr,
-          "usage: "PROJECT" [options] PROG args...\n\n"
+          "usage: "PACKAGE_NAME" [options] PROG args...\n\n"
+
+          "- Note: PID namespace and mounting procfs is default\n\n"
 
           "[options]\n"
-          "\t--ns-mount DEST   : new mount namespace with DEST binding to container\n"
-          "\t--ns-pid          : new pid namespace\n"
-          "\t--ns-user UID:GID : new user namespace with UID:GID binding to container\n"
+          "\t--ns-mount <PATH>   : new mount namespace with <PATH> mounting to container\n"
+          "\t--ns-user <UID:GID> : new user namespace with <UID:GID> mapping to container\n"
           );
 }
 
@@ -52,7 +55,13 @@ init_container_fn(void *arg)
   /* required namespaces are made ! */
   struct rcv_arguments *args = arg;
 
-  __debug("child process");
+  /* default values */
+  if (mount("none", "/proc", NULL, MS_REC | MS_PRIVATE, NULL) == -1)
+    err_die(MOUNT_FAIL, "Failed to mount-private proc (%s)", strerror(errno));
+  if (mount("proc", "/proc", "proc", 0, NULL) == -1)
+    err_die(MOUNT_FAIL, "Failed to mount proc (%s)", strerror(errno));
+
+  __debug("about to call 'execvp");
   execvp(args->exec_prog, args->exec_args);
 }
 

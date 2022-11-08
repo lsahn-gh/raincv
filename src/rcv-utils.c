@@ -39,8 +39,10 @@ args_parse(int argc, char *argv[])
   retval_if(argc == 0, NULL);
 
   rcv_arguments_init(&rcv_args, sizeof(struct rcv_arguments));
+  /* default */
+  rcv_args.ns_flags |= CLONE_NEWPID;
+  rcv_args.ns_flags |= CLONE_NEWNS; /* procfs */
 
-  /* TODO optimize later */
   for (;
        *argv != NULL && (*argv)[0] == '-' && (*argv)[1] == '-';
        argv++)
@@ -49,17 +51,14 @@ args_parse(int argc, char *argv[])
     {
       opt_debug = 1;
     }
-    else if (strcmp(*argv, "--ns-mount") == 0)
+    else if (strncmp(*argv, "--ns-mount", strlen("--ns-mount")) == 0)
     {
-      rcv_args.ns_flags |= CLONE_NEWNS;
+      /* TODO mount path parser */
       dzf_vec_add_tail(&rcv_args.ns_mnt_points, *(++argv));
-    }
-    else if (strcmp(*argv, "--ns-pid") == 0)
-    {
-      rcv_args.ns_flags |= CLONE_NEWPID;
     }
     else if (strcmp(*argv, "--ns-user") == 0)
     {
+      /* TODO uid:gid parser */
       rcv_args.ns_flags |= CLONE_NEWUSER;
       dzf_vec_add_tail(&rcv_args.ns_user_uidgid, *(++argv));
     }

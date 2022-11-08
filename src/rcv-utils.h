@@ -33,7 +33,7 @@ struct rcv_arguments
   char **exec_args;
 
   /* NS */
-  int ns_flags;
+  unsigned int ns_flags;
   vec_string_t ns_mnt_points;
   vec_string_t ns_pid;
   vec_string_t ns_user_uidgid;
@@ -52,6 +52,7 @@ enum {
   ARGS_FAIL,
   CLONE_FAIL,
   CHILD_FAIL,
+  MOUNT_FAIL,
 };
 
 #define err_die(code, fmt, ...) \
