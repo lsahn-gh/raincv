@@ -45,6 +45,7 @@ usage(void)
 
           "[options]\n"
           "\t--help              : show help\n"
+          "\t--debug             : show debugging logs\n"
           "\t--hostname <NAME>   : new hostname to container\n"
           "\t--ns-mount <PATH>   : new mount namespace with <PATH> mounting to container\n"
           "\t--ns-user <UID:GID> : new user namespace with <UID:GID> mapping to container\n"

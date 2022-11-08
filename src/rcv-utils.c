@@ -50,14 +50,14 @@ args_parse(int argc, char *argv[])
        *argv != NULL && (*argv)[0] == '-' && (*argv)[1] == '-';
        argv++)
   {
-    if (strcmp(*argv, "--debug") == 0)
-    {
-      opt_debug = 1;
-    }
-    else if (strcmp(*argv, "--help") == 0)
+    if (strcmp(*argv, "--help") == 0)
     {
       rcv_args.show_help = 1;
       goto success;
+    }
+    else if (strcmp(*argv, "--debug") == 0)
+    {
+      opt_debug = 1;
     }
     else if (strcmp(*argv, "--hostname") == 0)
     {
