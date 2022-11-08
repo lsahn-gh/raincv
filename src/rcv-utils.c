@@ -74,7 +74,7 @@ args_parse(int argc, char *argv[])
 
   /* parse exec PROG and its arguments */
   if (*argv != NULL) {
-    rcv_args.exec_prog = *argv++;
+    rcv_args.exec_prog = *argv;
     rcv_args.exec_args = argv;
   }
 
