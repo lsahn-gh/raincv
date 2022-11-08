@@ -44,6 +44,7 @@ usage(void)
           "- Note: PID namespace and mounting procfs is default\n\n"
 
           "[options]\n"
+          "\t--hostname <NAME>   : new hostname to container\n"
           "\t--ns-mount <PATH>   : new mount namespace with <PATH> mounting to container\n"
           "\t--ns-user <UID:GID> : new user namespace with <UID:GID> mapping to container\n"
           );
@@ -60,6 +61,12 @@ init_container_fn(void *arg)
     err_die(MOUNT_FAIL, "Failed to mount-private proc (%s)", strerror(errno));
   if (mount("proc", "/proc", "proc", 0, NULL) == -1)
     err_die(MOUNT_FAIL, "Failed to mount proc (%s)", strerror(errno));
+
+  /* args */
+  if (args->ns_hostname) {
+    if (sethostname(args->ns_hostname, strlen(args->ns_hostname)) == -1)
+      err_die(UTS_FAIL, "Failed to set new hostname (%s)", strerror(errno));
+  }
 
   __debug("about to call 'execvp");
   execvp(args->exec_prog, args->exec_args);

@@ -26,7 +26,6 @@ rcv_arguments_init(struct rcv_arguments *args, size_t len)
 {
   memset(args, 0, len);
   dzf_vec_new(&(args->ns_mnt_points), sizeof(args->ns_mnt_points.data[0]));
-  dzf_vec_new(&(args->ns_pid), sizeof(args->ns_pid.data[0]));
   dzf_vec_new(&(args->ns_user_uidgid), sizeof(args->ns_user_uidgid.data[0]));
 }
 
@@ -50,6 +49,11 @@ args_parse(int argc, char *argv[])
     if (strcmp(*argv, "--debug") == 0)
     {
       opt_debug = 1;
+    }
+    else if (strcmp(*argv, "--hostname") == 0)
+    {
+      rcv_args.ns_flags |= CLONE_NEWUTS;
+      rcv_args.ns_hostname = *(++argv);
     }
     else if (strncmp(*argv, "--ns-mount", strlen("--ns-mount")) == 0)
     {
