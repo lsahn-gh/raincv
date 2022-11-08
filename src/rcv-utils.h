@@ -31,6 +31,8 @@ struct rcv_arguments
 {
   char *exec_prog;
   char **exec_args;
+  unsigned char err;
+  unsigned char show_help;
 
   /* NS */
   unsigned int ns_flags;
@@ -48,6 +50,7 @@ extern char opt_debug;
 
 #define die(retcode) exit(-retcode)
 enum {
+  NO_ERROR = 0,
   EXIT_FAIL = 1,
   ARGS_FAIL,
   CLONE_FAIL,

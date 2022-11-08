@@ -44,6 +44,7 @@ usage(void)
           "- Note: PID namespace and mounting procfs is default\n\n"
 
           "[options]\n"
+          "\t--help              : show help\n"
           "\t--hostname <NAME>   : new hostname to container\n"
           "\t--ns-mount <PATH>   : new mount namespace with <PATH> mounting to container\n"
           "\t--ns-user <UID:GID> : new user namespace with <UID:GID> mapping to container\n"
@@ -79,9 +80,16 @@ main(int argc, char *argv[])
   struct rcv_arguments *args;
 
   args = args_parse(--argc, ++argv);
-  if (args == NULL) {
-    usage();
-    die(ARGS_FAIL);
+  switch (args->err) {
+    case NO_ERROR:
+      if (args->show_help) {
+        usage();
+        die(EXIT_SUCCESS);
+      }
+      break;
+    default:
+      usage();
+      die(args->err);
   }
 
   child_pid = clone(init_container_fn,

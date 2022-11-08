@@ -25,6 +25,8 @@ static void
 rcv_arguments_init(struct rcv_arguments *args, size_t len)
 {
   memset(args, 0, len);
+
+  args->err = ARGS_FAIL;
   dzf_vec_new(&(args->ns_mnt_points), sizeof(args->ns_mnt_points.data[0]));
   dzf_vec_new(&(args->ns_user_uidgid), sizeof(args->ns_user_uidgid.data[0]));
 }
@@ -35,9 +37,11 @@ args_parse(int argc, char *argv[])
   static struct rcv_arguments rcv_args;
   struct argument *p;
 
-  retval_if(argc == 0, NULL);
-
   rcv_arguments_init(&rcv_args, sizeof(struct rcv_arguments));
+
+  if (argc == 0)
+    goto out;
+
   /* default */
   rcv_args.ns_flags |= CLONE_NEWPID;
   rcv_args.ns_flags |= CLONE_NEWNS; /* procfs */
@@ -49,6 +53,11 @@ args_parse(int argc, char *argv[])
     if (strcmp(*argv, "--debug") == 0)
     {
       opt_debug = 1;
+    }
+    else if (strcmp(*argv, "--help") == 0)
+    {
+      rcv_args.show_help = 1;
+      goto success;
     }
     else if (strcmp(*argv, "--hostname") == 0)
     {
@@ -68,7 +77,8 @@ args_parse(int argc, char *argv[])
     }
     else
     {
-      return NULL; /* unrecognized options */
+      /* unrecognized options */
+      goto out;
     }
   }
 
@@ -78,6 +88,10 @@ args_parse(int argc, char *argv[])
     rcv_args.exec_args = argv;
   }
 
+success:
+  rcv_args.err = NO_ERROR;
+
+out:
   return &rcv_args;
 }
 
