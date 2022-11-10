@@ -18,6 +18,8 @@
 #define _GNU_SOURCE
 #include <sched.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/syscall.h>
 
 #include "rcv-utils.h"
 
@@ -81,10 +83,11 @@ args_parse(int argc, char *argv[])
   }
 
   /* parse exec PROG and its arguments */
-  if (*argv != NULL) {
-    rcv_args.exec_prog = *argv;
-    rcv_args.exec_args = argv;
-  }
+  if (*argv == NULL)
+    goto out;
+
+  rcv_args.exec_prog = *argv;
+  rcv_args.exec_args = argv;
 
 success:
   rcv_args.err = NO_ERROR;
@@ -93,3 +96,8 @@ out:
   return &rcv_args;
 }
 
+int
+raw_clone(int clone_flags)
+{
+  return (int) syscall(SYS_clone, clone_flags, NULL);
+}

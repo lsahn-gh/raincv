@@ -35,7 +35,7 @@ struct rcv_arguments
   unsigned char show_help;
 
   /* NS */
-  unsigned int ns_flags;
+  int ns_flags;
   char * ns_hostname;
   vec_string_t ns_mnt_points;
   struct {
@@ -60,6 +60,8 @@ enum {
   CHILD_FAIL,
   MOUNT_FAIL,
   UTS_FAIL,
+
+  NOT_REACH,
 };
 
 #define err_die(code, fmt, ...) \
@@ -90,6 +92,6 @@ enum {
 
 /* -- function declares -- */
 struct rcv_arguments * args_parse(int argc, char *argv[]);
-
+int raw_clone(int clone_flags);
 
 #endif /* UTILS_H */

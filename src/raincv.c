@@ -52,12 +52,9 @@ usage(void)
           );
 }
 
-static int
-init_container_fn(void *arg)
+static void
+new_container(struct rcv_arguments *args)
 {
-  /* required namespaces are made ! */
-  struct rcv_arguments *args = arg;
-
   /* default values */
   if (mount("none", "/proc", NULL, MS_REC | MS_PRIVATE, NULL) == -1)
     err_die(MOUNT_FAIL, "Failed to mount-private proc (%s)", strerror(errno));
@@ -70,14 +67,14 @@ init_container_fn(void *arg)
       err_die(UTS_FAIL, "Failed to set new hostname (%s)", strerror(errno));
   }
 
-  __debug("about to call 'execvp");
+  __debug("about to call 'execvp'");
   execvp(args->exec_prog, args->exec_args);
 }
 
 int
 main(int argc, char *argv[])
 {
-  pid_t child_pid;
+  pid_t pid;
   struct rcv_arguments *args;
 
   args = args_parse(--argc, ++argv);
@@ -93,16 +90,21 @@ main(int argc, char *argv[])
       die(args->err);
   }
 
-  child_pid = clone(init_container_fn,
-                    container_stack + STACK_SIZE_1MB,
-                    args->ns_flags | SIGCHLD,
-                    args);
-  if (child_pid == -1)
-    err_die(CLONE_FAIL, "Failed for calling clone (%s)", strerror(errno));
+  pid = (pid_t) raw_clone(args->ns_flags | SIGCHLD);
+  if (pid == -1)
+    err_die(CLONE_FAIL, "Failed for cloning (%s)", strerror(errno));
 
-  if (waitpid(child_pid, NULL, 0) == -1)
-    err_die(CHILD_FAIL, "waitpid");
+  if (pid > 0) {
+    /* parent */
+    if (waitpid(pid, NULL, 0) == -1)
+      err_die(CHILD_FAIL, "waitpid");
+    die(EXIT_SUCCESS);
+  }
 
-  return EXIT_SUCCESS;
+  /* child */
+  new_container(args);
+
+  /* NOT reach */
+  err_die(NOT_REACH, "reached line shouldn't be!");
 }
 
