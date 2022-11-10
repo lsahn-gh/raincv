@@ -38,7 +38,10 @@ struct rcv_arguments
   unsigned int ns_flags;
   char * ns_hostname;
   vec_string_t ns_mnt_points;
-  vec_string_t ns_user_uidgid;
+  struct {
+    unsigned short uid;
+    unsigned short gid;
+  } ns_user;
 };
 
 

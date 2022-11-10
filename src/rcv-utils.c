@@ -28,7 +28,6 @@ rcv_arguments_init(struct rcv_arguments *args, size_t len)
 
   args->err = ARGS_FAIL;
   dzf_vec_new(&(args->ns_mnt_points), sizeof(args->ns_mnt_points.data[0]));
-  dzf_vec_new(&(args->ns_user_uidgid), sizeof(args->ns_user_uidgid.data[0]));
 }
 
 struct rcv_arguments *
@@ -73,7 +72,6 @@ args_parse(int argc, char *argv[])
     {
       /* TODO uid:gid parser */
       rcv_args.ns_flags |= CLONE_NEWUSER;
-      dzf_vec_add_tail(&rcv_args.ns_user_uidgid, *(++argv));
     }
     else
     {
