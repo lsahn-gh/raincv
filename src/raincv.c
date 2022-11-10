@@ -32,9 +32,6 @@
 
 char opt_debug;
 
-#define STACK_SIZE_1MB (1024 * 1024)
-static char container_stack[STACK_SIZE_1MB];
-
 static void
 usage(void)
 {
