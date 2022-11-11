@@ -1,4 +1,4 @@
-/** rcv-utils.h
+/** rcv-args.h
  *
  * Copyright 2022 Leesoo Ahn <lsahn@ooseel.net>
  *
@@ -15,14 +15,30 @@
  * limitations under the License.
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef ARGS_H
+#define ARGS_H
 
-#ifdef ARRAY_SIZE
-# undef ARRAY_SIZE
-#endif
-#define ARRAY_SIZE(arr) (arr / arr[0])
+#include <dzf/dzf-vector.h>
 
-int raw_clone(int clone_flags);
+typedef dzf_vec_t(char *) vec_string_t;
 
-#endif /* UTILS_H */
+struct rcv_arguments
+{
+  char *exec_prog;
+  char **exec_args;
+  unsigned char err;
+  unsigned char show_help;
+
+  /* NS */
+  int ns_flags;
+  char * ns_hostname;
+  vec_string_t ns_mnt_points;
+  struct {
+    unsigned short uid;
+    unsigned short gid;
+  } ns_user;
+};
+
+struct rcv_arguments * args_parse(int argc, char *argv[]);
+
+#endif /* ARGS_H */

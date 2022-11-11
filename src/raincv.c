@@ -28,6 +28,8 @@
 
 #include "config.h"
 
+#include "rcv-log.h"
+#include "rcv-args.h"
 #include "rcv-utils.h"
 
 char opt_debug;
