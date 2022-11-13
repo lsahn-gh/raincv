@@ -18,6 +18,9 @@
 #ifndef LOG_H
 #define LOG_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
 extern char opt_debug;
 #define __debug(fmt, ...) \
   if (opt_debug) \
@@ -33,6 +36,7 @@ enum {
   MOUNT_FAIL,
   UTS_FAIL,
 
+  INIT_FAIL,
   NOT_REACH,
 };
 
@@ -46,6 +50,11 @@ enum {
   do { \
     fprintf(stderr, fmt "\n", ##__VA_ARGS__); \
     return (retval); \
+  } while (0)
+
+#define err(fmt, ...) \
+  do { \
+    fprintf(stderr, fmt "\n", ##__VA_ARGS__); \
   } while (0)
 
 #define retval_if(expr, retval) \

@@ -30,6 +30,7 @@
 
 #include "rcv-log.h"
 #include "rcv-args.h"
+#include "rcv-init.h"
 #include "rcv-utils.h"
 
 char opt_debug;
@@ -39,8 +40,6 @@ usage(void)
 {
   fprintf(stderr,
           "usage: "PACKAGE_NAME" [options] PROG args...\n\n"
-
-          "- Note: PID namespace and mounting procfs is default\n\n"
 
           "[options]\n"
           "\t--help              : show help\n"
@@ -101,6 +100,9 @@ main(int argc, char *argv[])
   }
 
   /* child */
+  if (args->spawn_init)
+    spawn_container_init();
+
   new_container(args);
 
   /* NOT reach */

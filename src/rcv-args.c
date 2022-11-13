@@ -59,6 +59,10 @@ args_parse(int argc, char *argv[])
     {
       opt_debug = 1;
     }
+    else if (strcmp(*argv, "--spawn-init") == 0)
+    {
+      rcv_args.spawn_init = 1;
+    }
     else if (strcmp(*argv, "--hostname") == 0)
     {
       rcv_args.ns_flags |= CLONE_NEWUTS;

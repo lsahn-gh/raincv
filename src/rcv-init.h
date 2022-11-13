@@ -1,4 +1,4 @@
-/** rcv-args.h
+/** rcv-init.h
  *
  * Copyright 2022 Leesoo Ahn <lsahn@ooseel.net>
  *
@@ -15,31 +15,9 @@
  * limitations under the License.
  */
 
-#ifndef ARGS_H
-#define ARGS_H
+#ifndef INIT_H
+#define INIT_H
 
-#include <dzf/dzf-vector.h>
+int spawn_container_init(void);
 
-typedef dzf_vec_t(char *) vec_string_t;
-
-struct rcv_arguments
-{
-  char *exec_prog;
-  char **exec_args;
-  unsigned char err;
-  unsigned char show_help;
-  unsigned char spawn_init;
-
-  /* NS */
-  int ns_flags;
-  char * ns_hostname;
-  vec_string_t ns_mnt_points;
-  struct {
-    unsigned short uid;
-    unsigned short gid;
-  } ns_user;
-};
-
-struct rcv_arguments * args_parse(int argc, char *argv[]);
-
-#endif /* ARGS_H */
+#endif /* INIT_H */
